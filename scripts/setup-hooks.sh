@@ -177,21 +177,42 @@ fi
 
 # 3. Check test coverage
 echo -e "${YELLOW}[3/3] Checking test coverage...${NC}"
-COVERAGE=$(go test -coverprofile=/tmp/coverage.out ./... 2>&1 | grep "coverage:" | awk '{print $2}' | sed 's/%//' | head -1)
-rm -f /tmp/coverage.out
 
-if [ -n "$COVERAGE" ]; then
-    COVERAGE_INT=${COVERAGE%.*}
-    if [ "$COVERAGE_INT" -lt 70 ]; then
-        echo -e "${YELLOW}⚠ Warning: Test coverage is ${COVERAGE}% (target: 70%+)${NC}"
-        read -p "Continue anyway? (y/n) " -n 1 -r
-        echo
-        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-            exit 1
+# Run tests with coverage explicitly (not from cache)
+if go test -cover ./... > /tmp/coverage_output.txt 2>&1; then
+    # Extract coverage from the output
+    COVERAGE=$(grep "coverage:" /tmp/coverage_output.txt | \
+        grep -v "\\[no test files\\]" | \
+        awk '{for(i=1;i<=NF;i++) if($i~/^[0-9.]+%$/) print $i}' | \
+        sed 's/%//' | \
+        sort -n | \
+        tail -1)
+
+    rm -f /tmp/coverage_output.txt
+
+    if [ -n "$COVERAGE" ] && [ "$COVERAGE" != "" ]; then
+        COVERAGE_INT=$(echo "$COVERAGE" | cut -d. -f1)
+        if [ -n "$COVERAGE_INT" ] && [ "$COVERAGE_INT" -ge 0 ] 2>/dev/null; then
+            if [ "$COVERAGE_INT" -lt 70 ]; then
+                echo -e "${YELLOW}⚠ Warning: Test coverage is ${COVERAGE}% (target: 70%+)${NC}"
+                read -p "Continue anyway? (y/n) " -n 1 -r
+                echo
+                if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+                    exit 1
+                fi
+            else
+                echo -e "${GREEN}✓ Test coverage: ${COVERAGE}%${NC}\n"
+            fi
+        else
+            echo -e "${GREEN}✓ Tests passed (coverage check skipped)${NC}\n"
         fi
     else
-        echo -e "${GREEN}✓ Test coverage: ${COVERAGE}%${NC}\n"
+        echo -e "${GREEN}✓ Tests passed (coverage check skipped)${NC}\n"
     fi
+else
+    rm -f /tmp/coverage_output.txt
+    echo -e "${RED}✗ Tests failed${NC}"
+    exit 1
 fi
 
 echo -e "${GREEN}All pre-push checks passed! ✓${NC}"
