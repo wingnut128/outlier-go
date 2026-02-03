@@ -1,4 +1,4 @@
-.PHONY: build release test coverage stress stress-calc stress-server bench install docker-build docker-run swagger clean lint version help
+.PHONY: build release test coverage stress stress-calc stress-server bench install docker-build docker-run swagger clean lint version hooks help
 
 # Version information
 VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")
@@ -101,6 +101,11 @@ version:
 	@echo "Git Commit: $(GIT_COMMIT)"
 	@echo "Build Date: $(BUILD_DATE)"
 
+# Setup Git hooks
+hooks:
+	@echo "Setting up Git hooks..."
+	@bash scripts/setup-hooks.sh
+
 # Show help
 help:
 	@echo "Available targets:"
@@ -119,4 +124,5 @@ help:
 	@echo "  lint          - Run linter"
 	@echo "  clean         - Clean build artifacts"
 	@echo "  version       - Show version information"
+	@echo "  hooks         - Setup Git pre-commit/pre-push hooks"
 	@echo "  help          - Show this help message"
