@@ -1,4 +1,4 @@
-.PHONY: build release test coverage install docker-build docker-run swagger clean lint version help
+.PHONY: build release test coverage stress stress-calc stress-server bench install docker-build docker-run swagger clean lint version help
 
 # Version information
 VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")
@@ -31,6 +31,34 @@ coverage:
 	@go test -coverprofile=coverage.out ./...
 	@go tool cover -html=coverage.out -o coverage.html
 	@echo "Coverage report generated: coverage.html"
+
+# Run stress tests
+stress:
+	@echo "Running all stress tests..."
+	@echo "================================"
+	@go test -v -run TestStress ./internal/calculator
+	@echo ""
+	@echo "================================"
+	@go test -v -run TestStress ./internal/server
+	@echo ""
+	@echo "Stress tests complete!"
+
+# Run calculator stress tests only
+stress-calc:
+	@echo "Running calculator stress tests..."
+	@go test -v -run TestStress ./internal/calculator
+
+# Run server stress tests only
+stress-server:
+	@echo "Running server stress tests..."
+	@go test -v -run TestStress ./internal/server
+
+# Run benchmarks
+bench:
+	@echo "Running benchmarks..."
+	@go test -bench=. -benchmem ./internal/calculator
+	@echo ""
+	@go test -bench=. -benchmem ./internal/server
 
 # Install the binary
 install:
@@ -76,15 +104,19 @@ version:
 # Show help
 help:
 	@echo "Available targets:"
-	@echo "  build        - Build the binary"
-	@echo "  release      - Build optimized release binary"
-	@echo "  test         - Run tests"
-	@echo "  coverage     - Generate test coverage report"
-	@echo "  install      - Install the binary"
-	@echo "  docker-build - Build Docker image"
-	@echo "  docker-run   - Run Docker container"
-	@echo "  swagger      - Generate Swagger documentation"
-	@echo "  lint         - Run linter"
-	@echo "  clean        - Clean build artifacts"
-	@echo "  version      - Show version information"
-	@echo "  help         - Show this help message"
+	@echo "  build         - Build the binary"
+	@echo "  release       - Build optimized release binary"
+	@echo "  test          - Run tests"
+	@echo "  coverage      - Generate test coverage report"
+	@echo "  stress        - Run all stress tests"
+	@echo "  stress-calc   - Run calculator stress tests only"
+	@echo "  stress-server - Run server stress tests only"
+	@echo "  bench         - Run benchmarks"
+	@echo "  install       - Install the binary"
+	@echo "  docker-build  - Build Docker image"
+	@echo "  docker-run    - Run Docker container"
+	@echo "  swagger       - Generate Swagger documentation"
+	@echo "  lint          - Run linter"
+	@echo "  clean         - Clean build artifacts"
+	@echo "  version       - Show version information"
+	@echo "  help          - Show this help message"
