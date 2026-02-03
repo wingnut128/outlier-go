@@ -22,8 +22,8 @@ type LoggingConfig struct {
 
 // ServerConfig represents server configuration
 type ServerConfig struct {
-	Port   int    `toml:"port"`
 	BindIP string `toml:"bind_ip"`
+	Port   int    `toml:"port"`
 }
 
 // DefaultConfig returns a configuration with default values

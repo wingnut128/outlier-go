@@ -14,8 +14,8 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"github.com/wingnut128/outlier-go/internal/config"
 	_ "github.com/wingnut128/outlier-go/docs" // swagger docs
+	"github.com/wingnut128/outlier-go/internal/config"
 )
 
 // Server represents the HTTP server
@@ -115,8 +115,12 @@ func (s *Server) Start() error {
 	addr := fmt.Sprintf("%s:%d", s.config.Server.BindIP, s.config.Server.Port)
 
 	srv := &http.Server{
-		Addr:    addr,
-		Handler: s.router,
+		Addr:              addr,
+		Handler:           s.router,
+		ReadHeaderTimeout: 10 * time.Second,
+		ReadTimeout:       30 * time.Second,
+		WriteTimeout:      30 * time.Second,
+		IdleTimeout:       120 * time.Second,
 	}
 
 	// Channel to listen for errors from the server

@@ -25,7 +25,7 @@ func TestStress_ConcurrentAPIRequests(t *testing.T) {
 	srv := NewServer(cfg)
 
 	const (
-		numGoroutines = 50
+		numGoroutines        = 50
 		requestsPerGoroutine = 20
 	)
 
@@ -165,7 +165,7 @@ func TestStress_MixedOperations(t *testing.T) {
 	srv := NewServer(cfg)
 
 	const (
-		numGoroutines = 30
+		numGoroutines          = 30
 		operationsPerGoroutine = 10
 	)
 
@@ -186,7 +186,7 @@ func TestStress_MixedOperations(t *testing.T) {
 
 				switch op {
 				case 0: // Health check
-					httpReq := httptest.NewRequest("GET", "/health", nil)
+					httpReq := httptest.NewRequest("GET", "/health", http.NoBody)
 					w := httptest.NewRecorder()
 					srv.router.ServeHTTP(w, httpReq)
 					if w.Code == http.StatusOK {
@@ -253,7 +253,7 @@ func BenchmarkHealthEndpoint(b *testing.B) {
 	cfg := config.DefaultConfig()
 	srv := NewServer(cfg)
 
-	httpReq := httptest.NewRequest("GET", "/health", nil)
+	httpReq := httptest.NewRequest("GET", "/health", http.NoBody)
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {

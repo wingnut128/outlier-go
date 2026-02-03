@@ -75,7 +75,7 @@ func TestStress_ConcurrentCalculations(t *testing.T) {
 				percentile := 50.0 + float64(iter)*5.0
 				_, err := CalculatePercentile(values, percentile)
 				if err != nil {
-					errors <- fmt.Errorf("goroutine %d, iteration %d: %v", id, iter, err)
+					errors <- fmt.Errorf("goroutine %d, iteration %d: %w", id, iter, err)
 					return
 				}
 			}
@@ -143,8 +143,8 @@ func TestStress_EdgeCases(t *testing.T) {
 	}
 
 	testCases := []struct {
-		name       string
 		generator  func(size int) []float64
+		name       string
 		percentile float64
 	}{
 		{
