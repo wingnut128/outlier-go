@@ -1,0 +1,10 @@
+# Development configuration
+
+[logging]
+level = "debug"
+output = "stdout"
+format = "pretty"
+
+[server]
+port = 3000
+bind_ip = "127.0.0.1"

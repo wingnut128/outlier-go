@@ -1,0 +1,18 @@
+# Example configuration file for Outlier
+
+[logging]
+# Log level: trace, debug, info, warn, error
+level = "info"
+
+# Log output: stdout, stderr, file
+output = "stdout"
+
+# Log format: compact, pretty, json
+format = "compact"
+
+[server]
+# Server port
+port = 3000
+
+# Bind IP address
+bind_ip = "0.0.0.0"

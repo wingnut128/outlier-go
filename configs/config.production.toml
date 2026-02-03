@@ -1,0 +1,10 @@
+# Production configuration
+
+[logging]
+level = "info"
+output = "stdout"
+format = "json"
+
+[server]
+port = 3000
+bind_ip = "0.0.0.0"

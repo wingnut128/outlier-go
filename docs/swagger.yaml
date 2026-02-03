@@ -1,0 +1,120 @@
+basePath: /
+definitions:
+  api.CalculateRequest:
+    properties:
+      percentile:
+        type: number
+      values:
+        items:
+          type: number
+        type: array
+    required:
+    - values
+    type: object
+  api.CalculateResponse:
+    properties:
+      count:
+        type: integer
+      percentile:
+        type: number
+      result:
+        type: number
+    type: object
+  api.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  api.HealthResponse:
+    properties:
+      service:
+        type: string
+      status:
+        type: string
+      version:
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact:
+    email: support@example.com
+    name: API Support
+    url: https://github.com/wingnut128/outlier-go
+  description: A percentile calculator with CLI and HTTP API
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Outlier API
+  version: 1.0.0
+paths:
+  /calculate:
+    post:
+      consumes:
+      - application/json
+      description: Calculate a percentile from an array of numeric values using linear
+        interpolation
+      parameters:
+      - description: Calculate Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.CalculateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.CalculateResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Calculate percentile from values
+      tags:
+      - calculate
+  /calculate/file:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload a JSON or CSV file and calculate percentile
+      parameters:
+      - description: Data file (JSON or CSV)
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: 'Percentile to calculate (default: 95)'
+        in: formData
+        name: percentile
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.CalculateResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Calculate percentile from file
+      tags:
+      - calculate
+  /health:
+    get:
+      description: Check if the service is healthy
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.HealthResponse'
+      summary: Health check
+      tags:
+      - health
+swagger: "2.0"

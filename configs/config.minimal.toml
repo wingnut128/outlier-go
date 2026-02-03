@@ -1,0 +1,4 @@
+# Minimal configuration - uses defaults for most settings
+
+[server]
+port = 3000
