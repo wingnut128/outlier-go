@@ -1,0 +1,89 @@
+run:
+  timeout: 5m
+  tests: true
+  modules-download-mode: readonly
+
+linters:
+  enable:
+    - errcheck      # Check for unchecked errors
+    - gosimple      # Simplify code
+    - govet         # Vet examines Go source code
+    - ineffassign   # Detect ineffectual assignments
+    - staticcheck   # Advanced Go linter
+    - unused        # Check for unused code
+    - gofmt         # Check formatting
+    - goimports     # Check imports formatting
+    - misspell      # Check for misspelled words
+    - gocritic      # Comprehensive Go linter
+    - revive        # Fast, configurable, extensible linter
+    - gosec         # Security checker
+    - errname       # Check error naming conventions
+    - errorlint     # Find misuses of errors
+    - exportloopref # Check for loop variable capture
+    - gocyclo       # Check cyclomatic complexity
+    - goprintffuncname # Check printf-like function names
+    - noctx         # Check for sending http requests without context
+    - unconvert     # Remove unnecessary type conversions
+    - unparam       # Check for unused function parameters
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+
+  govet:
+    check-shadowing: true
+    enable-all: true
+
+  gocyclo:
+    min-complexity: 15
+
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - performance
+      - style
+    disabled-checks:
+      - commentedOutCode
+
+  revive:
+    rules:
+      - name: exported
+        disabled: false
+      - name: unexported-return
+        disabled: false
+      - name: error-strings
+        disabled: false
+      - name: error-naming
+        disabled: false
+
+  gosec:
+    excludes:
+      - G107 # URL passed to HTTP request - needed for API functionality
+      - G404 # Use of weak random - acceptable for test data
+
+  staticcheck:
+    checks: ["all"]
+
+issues:
+  exclude-rules:
+    # Exclude some linters from running on tests files
+    - path: _test\.go
+      linters:
+        - gocyclo
+        - errcheck
+        - gosec
+
+    # Exclude stress tests from some checks
+    - path: stress_test\.go
+      linters:
+        - gocyclo
+        - funlen
+
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
+output:
+  format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true
