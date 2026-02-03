@@ -105,8 +105,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-- (No unreleased changes)
+### Added
+- MIT License file
 
 ---
 
