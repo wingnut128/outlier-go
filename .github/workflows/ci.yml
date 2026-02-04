@@ -72,7 +72,7 @@ jobs:
         version: latest
         args: --timeout=5m
         skip-cache: false
-        install-mode: "binary"
+        install-mode: "goinstall"
 
   security:
     name: Security Scan
