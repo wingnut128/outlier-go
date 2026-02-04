@@ -1,6 +1,12 @@
 # Outlier - Percentile Calculator
 
-A high-performance percentile calculator written in Go, supporting both CLI and HTTP API modes. Convert from the original Rust implementation.
+[![CI](https://github.com/wingnut128/outlier-go/actions/workflows/ci.yml/badge.svg)](https://github.com/wingnut128/outlier-go/actions/workflows/ci.yml)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/wingnut128/outlier-go)](https://go.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Go Report Card](https://goreportcard.com/badge/github.com/wingnut128/outlier-go)](https://goreportcard.com/report/github.com/wingnut128/outlier-go)
+[![codecov](https://codecov.io/gh/wingnut128/outlier-go/branch/main/graph/badge.svg)](https://codecov.io/gh/wingnut128/outlier-go)
+
+A percentile calculator written in Go, supporting both CLI and HTTP API modes. Converted from the original Rust implementation.
 
 ## Features
 
