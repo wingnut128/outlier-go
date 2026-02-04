@@ -121,7 +121,7 @@ All dependencies installed and up-to-date:
 
 ### 11. Docker (`Dockerfile`)
 - [x] Multi-stage build
-- [x] Builder stage with Go 1.22-alpine
+- [x] Builder stage with Go 1.25.5-alpine
 - [x] Runtime stage with Alpine
 - [x] Optimized binary with `-ldflags="-s -w"`
 - [x] CA certificates included

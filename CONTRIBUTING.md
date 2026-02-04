@@ -42,7 +42,7 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 ### Prerequisites
 
-- Go 1.21 or later
+- Go 1.25.5 or later
 - Git
 - Make
 - Docker (optional, for container testing)

@@ -3,6 +3,7 @@ package parser
 import (
 	"encoding/csv"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -72,7 +73,7 @@ func ReadCSVFile(path string) ([]float64, error) {
 	var values []float64
 	for {
 		record, err := reader.Read()
-		if err == io.EOF {
+		if errors.Is(err, io.EOF) {
 			break
 		}
 		if err != nil {
@@ -148,7 +149,7 @@ func ReadCSVBytes(data []byte) ([]float64, error) {
 	var values []float64
 	for {
 		record, err := reader.Read()
-		if err == io.EOF {
+		if errors.Is(err, io.EOF) {
 			break
 		}
 		if err != nil {
