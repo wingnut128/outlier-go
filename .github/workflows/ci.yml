@@ -24,7 +24,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v5
       with:
-        go-version: ${{ matrix.go-version }}
+        go-version: '1.25'
 
     - name: Cache Go modules
       uses: actions/cache@v4
@@ -71,8 +71,7 @@ jobs:
       with:
         version: latest
         args: --timeout=5m
-        skip-pkg-cache: false
-        skip-build-cache: false
+        skip-cache: false
         install-mode: "binary"
 
   security:
