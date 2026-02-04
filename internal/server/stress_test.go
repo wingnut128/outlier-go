@@ -177,7 +177,7 @@ func TestStress_MixedOperations(t *testing.T) {
 
 	for i := 0; i < numGoroutines; i++ {
 		wg.Add(1)
-		go func(id int) {
+		go func(_ int) {
 			defer wg.Done()
 
 			for j := 0; j < operationsPerGoroutine; j++ {

@@ -7,7 +7,7 @@ linters:
   enable:
     - errcheck      # Check for unchecked errors
     - gosimple      # Simplify code
-    - govet         # Vet examines Go source code
+    - govet         # Vet examines Go source code (includes shadow checking)
     - ineffassign   # Detect ineffectual assignments
     - staticcheck   # Advanced Go linter
     - unused        # Check for unused code
@@ -19,7 +19,7 @@ linters:
     - gosec         # Security checker
     - errname       # Check error naming conventions
     - errorlint     # Find misuses of errors
-    - exportloopref # Check for loop variable capture
+    - copyloopvar   # Check for loop variable capture (replaces exportloopref)
     - gocyclo       # Check cyclomatic complexity
     - goprintffuncname # Check printf-like function names
     - noctx         # Check for sending http requests without context
@@ -32,7 +32,6 @@ linters-settings:
     check-blank: true
 
   govet:
-    check-shadowing: true
     enable-all: true
 
   gocyclo:
@@ -84,6 +83,7 @@ issues:
   max-same-issues: 0
 
 output:
-  format: colored-line-number
+  formats:
+    - format: colored-line-number
   print-issued-lines: true
   print-linter-name: true

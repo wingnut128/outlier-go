@@ -112,7 +112,8 @@ func handleCalculateFile(c *gin.Context) {
 	// Get percentile from form or default to 95
 	percentile := 95.0
 	if percentileStr := c.PostForm("percentile"); percentileStr != "" {
-		p, err := strconv.ParseFloat(percentileStr, 64)
+		var p float64
+		p, err = strconv.ParseFloat(percentileStr, 64)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, api.ErrorResponse{
 				Error: fmt.Sprintf("Invalid percentile value: %v", err),

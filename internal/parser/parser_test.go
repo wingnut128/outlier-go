@@ -11,7 +11,7 @@ func TestReadJSONFile(t *testing.T) {
 	jsonFile := filepath.Join(tmpDir, "test.json")
 
 	content := `[1.0, 2.0, 3.0, 4.0, 5.0]`
-	err := os.WriteFile(jsonFile, []byte(content), 0644)
+	err := os.WriteFile(jsonFile, []byte(content), 0o644)
 	if err != nil {
 		t.Fatalf("failed to create test file: %v", err)
 	}
@@ -43,7 +43,7 @@ func TestReadCSVFile(t *testing.T) {
 3.0
 4.0
 5.0`
-	err := os.WriteFile(csvFile, []byte(content), 0644)
+	err := os.WriteFile(csvFile, []byte(content), 0o644)
 	if err != nil {
 		t.Fatalf("failed to create test file: %v", err)
 	}
@@ -72,7 +72,7 @@ func TestReadCSVFile_MissingValueColumn(t *testing.T) {
 	content := `number
 1.0
 2.0`
-	err := os.WriteFile(csvFile, []byte(content), 0644)
+	err := os.WriteFile(csvFile, []byte(content), 0o644)
 	if err != nil {
 		t.Fatalf("failed to create test file: %v", err)
 	}
@@ -87,7 +87,7 @@ func TestReadValuesFromFile_UnsupportedFormat(t *testing.T) {
 	tmpDir := t.TempDir()
 	txtFile := filepath.Join(tmpDir, "test.txt")
 
-	err := os.WriteFile(txtFile, []byte("test"), 0644)
+	err := os.WriteFile(txtFile, []byte("test"), 0o644)
 	if err != nil {
 		t.Fatalf("failed to create test file: %v", err)
 	}

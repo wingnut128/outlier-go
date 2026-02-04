@@ -39,7 +39,7 @@ format = "json"
 port = 8080
 bind_ip = "127.0.0.1"
 `
-	err := os.WriteFile(configFile, []byte(content), 0644)
+	err := os.WriteFile(configFile, []byte(content), 0o644)
 	if err != nil {
 		t.Fatalf("failed to create test config file: %v", err)
 	}
@@ -78,7 +78,7 @@ func TestLoadConfig_InvalidTOML(t *testing.T) {
 	configFile := filepath.Join(tmpDir, "config.toml")
 
 	content := `this is not valid toml`
-	err := os.WriteFile(configFile, []byte(content), 0644)
+	err := os.WriteFile(configFile, []byte(content), 0o644)
 	if err != nil {
 		t.Fatalf("failed to create test config file: %v", err)
 	}
@@ -96,7 +96,7 @@ func TestLoadConfigWithPriority_ExplicitPath(t *testing.T) {
 	content := `[server]
 port = 9999
 `
-	err := os.WriteFile(configFile, []byte(content), 0644)
+	err := os.WriteFile(configFile, []byte(content), 0o644)
 	if err != nil {
 		t.Fatalf("failed to create test config file: %v", err)
 	}
@@ -118,7 +118,7 @@ func TestLoadConfigWithPriority_EnvVar(t *testing.T) {
 	content := `[server]
 port = 7777
 `
-	err := os.WriteFile(configFile, []byte(content), 0644)
+	err := os.WriteFile(configFile, []byte(content), 0o644)
 	if err != nil {
 		t.Fatalf("failed to create test config file: %v", err)
 	}

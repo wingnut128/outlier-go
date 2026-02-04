@@ -46,7 +46,7 @@ var rootCmd = &cobra.Command{
 	Long: `Outlier is a percentile calculator that supports both CLI and server modes.
 It can calculate percentiles from direct values, JSON files, or CSV files.`,
 	Version: version.GetFullVersion(),
-	Run:     runMain,
+	RunE:    runMain,
 }
 
 func init() {
@@ -60,15 +60,14 @@ func init() {
 
 func main() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 }
 
-func runMain(cmd *cobra.Command, args []string) {
+func runMain(cmd *cobra.Command, args []string) error {
 	// Quick exit for help/version without telemetry
 	if cmd.Flags().Changed("help") || cmd.Flags().Changed("version") {
-		return
+		return nil
 	}
 
 	// Initialize telemetry
@@ -84,7 +83,7 @@ func runMain(cmd *cobra.Command, args []string) {
 	// Load configuration
 	cfg, err := config.LoadConfigWithPriority(configPath)
 	if err != nil {
-		log.Fatalf("Failed to load configuration: %v\n", err)
+		return fmt.Errorf("failed to load configuration: %w", err)
 	}
 
 	// Override port if specified
@@ -94,49 +93,48 @@ func runMain(cmd *cobra.Command, args []string) {
 
 	// Server mode
 	if serveMode {
-		runServer(cfg)
-		return
+		return runServer(cfg)
 	}
 
 	// CLI mode
-	runCLI(cfg)
+	return runCLI()
 }
 
-func runServer(cfg *config.Config) {
+func runServer(cfg *config.Config) error {
 	srv := server.NewServer(cfg)
-	if err := srv.Start(); err != nil {
-		log.Fatalf("Server error: %v\n", err)
-	}
+	return srv.Start()
 }
 
-func runCLI(cfg *config.Config) {
+func runCLI() error {
 	var values []float64
 	var err error
 
 	// Determine input source
-	if filePath != "" {
+	switch {
+	case filePath != "":
 		values, err = parser.ReadValuesFromFile(filePath)
 		if err != nil {
-			log.Fatalf("Error reading file: %v\n", err)
+			return fmt.Errorf("reading file: %w", err)
 		}
-	} else if valuesStr != "" {
+	case valuesStr != "":
 		values, err = parseValuesFromString(valuesStr)
 		if err != nil {
-			log.Fatalf("Error parsing values: %v\n", err)
+			return fmt.Errorf("parsing values: %w", err)
 		}
-	} else {
-		log.Fatalf("Error: must provide either --file or --values\n")
+	default:
+		return fmt.Errorf("must provide either --file or --values")
 	}
 
 	// Calculate percentile
 	result, err := calculator.CalculatePercentile(values, percentile)
 	if err != nil {
-		log.Fatalf("Error calculating percentile: %v\n", err)
+		return fmt.Errorf("calculating percentile: %w", err)
 	}
 
 	// Output result
 	fmt.Printf("Number of values: %d\n", len(values))
 	fmt.Printf("Percentile (P%.0f): %.2f\n", percentile, result)
+	return nil
 }
 
 func parseValuesFromString(s string) ([]float64, error) {
