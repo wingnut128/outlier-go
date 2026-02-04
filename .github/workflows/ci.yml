@@ -71,6 +71,9 @@ jobs:
       with:
         version: latest
         args: --timeout=5m
+        skip-pkg-cache: false
+        skip-build-cache: false
+        install-mode: "binary"
 
   security:
     name: Security Scan
