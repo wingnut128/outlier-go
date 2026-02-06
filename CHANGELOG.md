@@ -105,6 +105,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.3] - 2026-02-06
+
+### Changed
+- Add server handler unit tests, improving coverage from 41% to 78% with tests for health, calculate, file upload endpoints, error paths, and request logger
+
 ## [1.0.2] - 2026-02-06
 
 ### Changed
@@ -134,6 +139,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **v1.0.3** (2026-02-06) - Improved server test coverage
 - **v1.0.2** (2026-02-06) - Improved parser test coverage
 - **v1.0.1** (2026-02-06) - Code cleanup and hook fixes
   - Refactored duplicate code in CSV parsing and server handlers
