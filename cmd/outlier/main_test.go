@@ -1,6 +1,7 @@
 package main
 
 import (
+	"slices"
 	"testing"
 )
 
@@ -101,22 +102,10 @@ func TestParseValuesFromString(t *testing.T) {
 				return
 			}
 			if !tt.wantErr {
-				if !floatSlicesEqual(got, tt.want) {
+				if !slices.Equal(got, tt.want) {
 					t.Errorf("parseValuesFromString() = %v, want %v", got, tt.want)
 				}
 			}
 		})
 	}
-}
-
-func floatSlicesEqual(a, b []float64) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i := range a {
-		if a[i] != b[i] {
-			return false
-		}
-	}
-	return true
 }

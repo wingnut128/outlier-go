@@ -24,8 +24,3 @@ type HealthResponse struct {
 	Service string `json:"service"`
 	Version string `json:"version"`
 }
-
-// ValueRecord represents a CSV record with a value field
-type ValueRecord struct {
-	Value float64 `csv:"value"`
-}

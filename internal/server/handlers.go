@@ -13,6 +13,14 @@ import (
 	"github.com/wingnut128/outlier-go/pkg/api"
 )
 
+const defaultPercentile = 95.0
+
+func badRequest(c *gin.Context, format string, args ...any) {
+	c.JSON(http.StatusBadRequest, api.ErrorResponse{
+		Error: fmt.Sprintf(format, args...),
+	})
+}
+
 // handleHealth handles GET /health
 // @Summary Health check
 // @Description Check if the service is healthy
@@ -42,23 +50,19 @@ func handleCalculate(c *gin.Context) {
 	var req api.CalculateRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, api.ErrorResponse{
-			Error: fmt.Sprintf("Invalid request: %v", err),
-		})
+		badRequest(c, "Invalid request: %v", err)
 		return
 	}
 
 	// Default percentile to 95 if not provided
 	if req.Percentile == 0 {
-		req.Percentile = 95.0
+		req.Percentile = defaultPercentile
 	}
 
 	// Calculate percentile
 	result, err := calculator.CalculatePercentile(req.Values, req.Percentile)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, api.ErrorResponse{
-			Error: err.Error(),
-		})
+		badRequest(c, "%s", err.Error())
 		return
 	}
 
@@ -84,9 +88,7 @@ func handleCalculateFile(c *gin.Context) {
 	// Get uploaded file
 	file, header, err := c.Request.FormFile("file")
 	if err != nil {
-		c.JSON(http.StatusBadRequest, api.ErrorResponse{
-			Error: fmt.Sprintf("Failed to read file: %v", err),
-		})
+		badRequest(c, "Failed to read file: %v", err)
 		return
 	}
 	defer file.Close()
@@ -94,30 +96,24 @@ func handleCalculateFile(c *gin.Context) {
 	// Read file contents
 	data, err := io.ReadAll(file)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, api.ErrorResponse{
-			Error: fmt.Sprintf("Failed to read file contents: %v", err),
-		})
+		badRequest(c, "Failed to read file contents: %v", err)
 		return
 	}
 
 	// Parse values from file
 	values, err := parser.ReadValuesFromBytes(data, header.Filename)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, api.ErrorResponse{
-			Error: fmt.Sprintf("Failed to parse file: %v", err),
-		})
+		badRequest(c, "Failed to parse file: %v", err)
 		return
 	}
 
 	// Get percentile from form or default to 95
-	percentile := 95.0
+	percentile := defaultPercentile
 	if percentileStr := c.PostForm("percentile"); percentileStr != "" {
 		var p float64
 		p, err = strconv.ParseFloat(percentileStr, 64)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, api.ErrorResponse{
-				Error: fmt.Sprintf("Invalid percentile value: %v", err),
-			})
+			badRequest(c, "Invalid percentile value: %v", err)
 			return
 		}
 		percentile = p
@@ -126,9 +122,7 @@ func handleCalculateFile(c *gin.Context) {
 	// Calculate percentile
 	result, err := calculator.CalculatePercentile(values, percentile)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, api.ErrorResponse{
-			Error: err.Error(),
-		})
+		badRequest(c, "%s", err.Error())
 		return
 	}
 

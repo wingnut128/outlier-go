@@ -48,56 +48,7 @@ func ReadCSVFile(path string) ([]float64, error) {
 	}
 	defer file.Close()
 
-	reader := csv.NewReader(file)
-
-	// Read header
-	header, err := reader.Read()
-	if err != nil {
-		return nil, fmt.Errorf("failed to read CSV header: %w", err)
-	}
-
-	// Find "value" column index
-	valueIndex := -1
-	for i, col := range header {
-		if strings.TrimSpace(strings.ToLower(col)) == "value" {
-			valueIndex = i
-			break
-		}
-	}
-
-	if valueIndex == -1 {
-		return nil, fmt.Errorf("CSV file must have a 'value' column")
-	}
-
-	// Read values
-	var values []float64
-	for {
-		record, err := reader.Read()
-		if errors.Is(err, io.EOF) {
-			break
-		}
-		if err != nil {
-			return nil, fmt.Errorf("failed to read CSV record: %w", err)
-		}
-
-		if valueIndex >= len(record) {
-			continue
-		}
-
-		valueStr := strings.TrimSpace(record[valueIndex])
-		if valueStr == "" {
-			continue
-		}
-
-		value, err := strconv.ParseFloat(valueStr, 64)
-		if err != nil {
-			return nil, fmt.Errorf("invalid number in CSV: %s", valueStr)
-		}
-
-		values = append(values, value)
-	}
-
-	return values, nil
+	return readCSVFromReader(csv.NewReader(file))
 }
 
 // ReadValuesFromBytes reads values from a byte slice based on the filename extension
@@ -124,8 +75,11 @@ func ReadJSONBytes(data []byte) ([]float64, error) {
 
 // ReadCSVBytes reads CSV data from a byte slice
 func ReadCSVBytes(data []byte) ([]float64, error) {
-	reader := csv.NewReader(strings.NewReader(string(data)))
+	return readCSVFromReader(csv.NewReader(strings.NewReader(string(data))))
+}
 
+// readCSVFromReader reads values from a CSV reader that has a "value" column header
+func readCSVFromReader(reader *csv.Reader) ([]float64, error) {
 	// Read header
 	header, err := reader.Read()
 	if err != nil {

@@ -114,7 +114,7 @@ func runCLI() error {
 	case filePath != "":
 		values, err = parser.ReadValuesFromFile(filePath)
 		if err != nil {
-			return fmt.Errorf("reading file: %w", err)
+			return err
 		}
 	case valuesStr != "":
 		values, err = parseValuesFromString(valuesStr)
@@ -128,7 +128,7 @@ func runCLI() error {
 	// Calculate percentile
 	result, err := calculator.CalculatePercentile(values, percentile)
 	if err != nil {
-		return fmt.Errorf("calculating percentile: %w", err)
+		return err
 	}
 
 	// Output result
