@@ -51,7 +51,7 @@ check_tool() {
 check_tool go
 
 # 1. Auto-format code
-echo -e "${YELLOW}[1/6] Auto-formatting code...${NC}"
+echo -e "${YELLOW}[1/5] Auto-formatting code...${NC}"
 STAGED_GO_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep '\.go$' || true)
 if [ -n "$STAGED_GO_FILES" ]; then
     echo "$STAGED_GO_FILES" | xargs gofmt -w
@@ -62,7 +62,7 @@ else
 fi
 
 # 2. Run linter
-echo -e "${YELLOW}[2/6] Running linter...${NC}"
+echo -e "${YELLOW}[2/5] Running linter...${NC}"
 if command -v golangci-lint &> /dev/null; then
     if ! golangci-lint run --timeout=3m; then
         echo -e "${RED}✗ Linter found issues${NC}"
@@ -76,7 +76,7 @@ else
 fi
 
 # 3. Go vet
-echo -e "${YELLOW}[3/6] Running go vet...${NC}"
+echo -e "${YELLOW}[3/5] Running go vet...${NC}"
 if ! go vet ./...; then
     echo -e "${RED}✗ go vet failed${NC}"
     exit 1
@@ -84,44 +84,23 @@ fi
 echo -e "${GREEN}✓ go vet passed${NC}\n"
 
 # 4. Run tests
-echo -e "${YELLOW}[4/6] Running tests...${NC}"
+echo -e "${YELLOW}[4/5] Running tests...${NC}"
 if ! go test -short ./...; then
     echo -e "${RED}✗ Tests failed${NC}"
     exit 1
 fi
 echo -e "${GREEN}✓ Tests passed${NC}\n"
 
-# 5. Check for common issues
-echo -e "${YELLOW}[5/6] Checking for common issues...${NC}"
+# 5. Build check
+echo -e "${YELLOW}[5/5] Checking if project builds...${NC}"
 
-# Check for TODO/FIXME in staged files
+# Check for debug print statements (non-blocking warning)
 STAGED_GO_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep '\.go$' || true)
 if [ -n "$STAGED_GO_FILES" ]; then
-    # Check for debugging statements
     if echo "$STAGED_GO_FILES" | xargs grep -n "fmt.Println\|log.Println" 2>/dev/null | grep -v "_test.go"; then
-        echo -e "${YELLOW}Warning: Found debug print statements${NC}"
-        echo "Consider removing them before committing"
-        read -p "Continue anyway? (y/n) " -n 1 -r
-        echo
-        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-            exit 1
-        fi
-    fi
-
-    # Check for missing error handling
-    if echo "$STAGED_GO_FILES" | xargs grep -n "err :=" 2>/dev/null | grep -v "if err"; then
-        echo -e "${YELLOW}Warning: Possible unhandled errors detected${NC}"
-        read -p "Continue anyway? (y/n) " -n 1 -r
-        echo
-        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-            exit 1
-        fi
+        echo -e "${YELLOW}⚠ Warning: Found debug print statements — consider removing them${NC}\n"
     fi
 fi
-echo -e "${GREEN}✓ Common checks passed${NC}\n"
-
-# 6. Build check
-echo -e "${YELLOW}[6/6] Checking if project builds...${NC}"
 if ! go build -o /tmp/outlier-build-test ./cmd/outlier > /dev/null 2>&1; then
     echo -e "${RED}✗ Build failed${NC}"
     exit 1
@@ -194,12 +173,7 @@ if go test -cover ./... > /tmp/coverage_output.txt 2>&1; then
         COVERAGE_INT=$(echo "$COVERAGE" | cut -d. -f1)
         if [ -n "$COVERAGE_INT" ] && [ "$COVERAGE_INT" -ge 0 ] 2>/dev/null; then
             if [ "$COVERAGE_INT" -lt 70 ]; then
-                echo -e "${YELLOW}⚠ Warning: Test coverage is ${COVERAGE}% (target: 70%+)${NC}"
-                read -p "Continue anyway? (y/n) " -n 1 -r
-                echo
-                if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-                    exit 1
-                fi
+                echo -e "${YELLOW}⚠ Warning: Test coverage is ${COVERAGE}% (target: 70%+)${NC}\n"
             else
                 echo -e "${GREEN}✓ Test coverage: ${COVERAGE}%${NC}\n"
             fi

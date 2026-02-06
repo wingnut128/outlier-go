@@ -105,13 +105,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-02-06
+
 ### Added
 - MIT License file
+
+### Changed
+- Deduplicate CSV parsing into shared `readCSVFromReader` helper
+- Add `badRequest` helper and `defaultPercentile` constant in server handlers
+- Replace custom `floatSlicesEqual` with stdlib `slices.Equal` in tests
+- Simplify redundant error wrapping in `runCLI`
+
+### Removed
+- Unused `ValueRecord` type from parser
+
+### Fixed
+- Pre-commit hook: remove false-positive "unhandled errors" check (already covered by `go vet` and `errcheck` linter)
+- Pre-commit hook: make debug print statement check a non-blocking warning instead of interactive prompt
+- Pre-push hook: make low coverage warning non-blocking instead of interactive prompt
+- Git hooks no longer use `read -p` interactive prompts that fail in non-interactive contexts (CI, piped input)
 
 ---
 
 ## Version History
 
+- **v1.0.1** (2026-02-06) - Code cleanup and hook fixes
+  - Refactored duplicate code in CSV parsing and server handlers
+  - Fixed git hooks to work in non-interactive environments
 - **v1.0.0** (2026-02-03) - Initial Go release
   - Complete feature parity with Rust implementation
   - Production-ready with comprehensive testing
