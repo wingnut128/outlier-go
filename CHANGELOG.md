@@ -105,6 +105,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-02-06
+
+### Changed
+- Expand parser test coverage from 70% to 94% with tests for `ReadValuesFromBytes`, error paths, and CSV edge cases
+
 ## [1.0.1] - 2026-02-06
 
 ### Added
@@ -129,6 +134,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **v1.0.2** (2026-02-06) - Improved parser test coverage
 - **v1.0.1** (2026-02-06) - Code cleanup and hook fixes
   - Refactored duplicate code in CSV parsing and server handlers
   - Fixed git hooks to work in non-interactive environments
